@@ -75,6 +75,7 @@ The Playwright MCP server supports the following command-line options:
 - `--port <port>`: Port to listen on for SSE transport
 - `--user-data-dir <path>`: Path to the user data directory
 - `--vision`: Run server that uses screenshots (Aria snapshots are used by default)
+- `--hybrid`: Run server that has both the Aria snapshot and screen vision tools
 
 ### User data directory
 

@@ -40,6 +40,7 @@ program
     .option('--port <port>', 'Port to listen on for SSE transport.')
     .option('--user-data-dir <path>', 'Path to the user data directory')
     .option('--vision', 'Run server that uses screenshots (Aria snapshots are used by default)')
+    .option('--hybrid', 'Run in hybrid mode, enabling both vision and snapshot accessibility tools')
     .action(async options => {
       const serverList = new ServerList(() => createServer({
         browser: options.browser,
@@ -47,6 +48,7 @@ program
         headless: options.headless,
         executablePath: options.executablePath,
         vision: !!options.vision,
+        hybrid: !!options.hybrid,
         cdpEndpoint: options.cdpEndpoint,
         capabilities: options.caps?.split(',').map((c: string) => c.trim() as ToolCapability),
       }));

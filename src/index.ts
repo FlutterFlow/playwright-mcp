@@ -68,6 +68,7 @@ type Options = {
   executablePath?: string;
   cdpEndpoint?: string;
   vision?: boolean;
+  hybrid?: boolean;
   capabilities?: ToolCapability[];
 };
 
@@ -109,7 +110,19 @@ export async function createServer(options?: Options): Promise<Server> {
     executablePath: options?.executablePath,
   };
 
-  const allTools = options?.vision ? screenshotTools : snapshotTools;
+  let allTools: Tool[];
+  if (options?.hybrid) {
+    const toolMap = new Map(snapshotTools.map(tool => [tool.schema.name, tool]));
+    screenshotTools.forEach(tool => {
+      if (!toolMap.has(tool.schema.name)) {
+        toolMap.set(tool.schema.name, tool);
+      }
+    });
+    allTools = Array.from(toolMap.values());
+  } else {
+    allTools = options?.vision ? screenshotTools : snapshotTools;
+  }
+
   const tools = allTools.filter(tool => !options?.capabilities || tool.capability === 'core' || options.capabilities.includes(tool.capability));
   return createServerWithTools({
     name: 'Playwright',
