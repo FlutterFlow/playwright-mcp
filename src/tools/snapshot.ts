@@ -296,7 +296,6 @@ export const clickAtRefCenter: Tool = {
     const snapshot = tab.snapshotOrDie();
     const locator = snapshot.refLocator(validatedParams.ref);
 
-    // Generate the code that will be executed
     const code = [
       `// Get the bounding box of ${validatedParams.ref}`,
       `const box = await page.${await generateLocator(locator)}.boundingBox();`,
