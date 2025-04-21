@@ -27,7 +27,7 @@ import * as javascript from '../javascript';
 import type * as playwright from 'playwright';
 import type { Tool } from './tool';
 
-const snapshot: Tool = {
+export const snapshot: Tool = {
   capability: 'core',
   schema: {
     name: 'browser_snapshot',
