@@ -286,7 +286,7 @@ export const clickAtRefCenter: Tool = {
   capability: 'core',
   schema: {
     name: 'browser_click_at_ref_center',
-    description: 'Click at the center of the bounding box of an element based on its ref',
+    description: 'Click at the center of an element ref from its accessibility snapshot',
     inputSchema: zodToJsonSchema(clickAtRefCenterSchema),
   },
 
