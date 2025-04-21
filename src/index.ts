@@ -27,7 +27,7 @@ import install from './tools/install';
 import keyboard from './tools/keyboard';
 import navigate from './tools/navigate';
 import pdf from './tools/pdf';
-import snapshot from './tools/snapshot';
+import snapshot, { clickAtRefCenter } from './tools/snapshot';
 import tabs from './tools/tabs';
 import screen from './tools/screen';
 
@@ -59,6 +59,8 @@ const screenshotTools: Tool[] = [
   ...pdf,
   ...screen,
   ...tabs(false),
+  snapshot[0], // browser_snapshot
+  clickAtRefCenter,
 ];
 
 type Options = {
