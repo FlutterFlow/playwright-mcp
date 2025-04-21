@@ -277,6 +277,54 @@ const screenshot: Tool = {
   }
 };
 
+const clickAtRefCenterSchema = z.object({
+  element: z.string().describe('Human-readable element description used to obtain permission to interact with the element'),
+  ref: z.string().describe('Exact target element reference from the page snapshot'),
+});
+
+export const clickAtRefCenter: Tool = {
+  capability: 'core',
+  schema: {
+    name: 'browser_click_at_ref_center',
+    description: 'Click at the center of the bounding box of an element based on its ref',
+    inputSchema: zodToJsonSchema(clickAtRefCenterSchema),
+  },
+
+  handle: async (context, params) => {
+    const validatedParams = clickAtRefCenterSchema.parse(params);
+    const tab = context.currentTabOrDie();
+    const snapshot = tab.snapshotOrDie();
+    const locator = snapshot.refLocator(validatedParams.ref);
+
+    // Generate the code that will be executed
+    const code = [
+      `// Get the bounding box of ${validatedParams.ref}`,
+      `const box = await page.${await generateLocator(locator)}.boundingBox();`,
+      `// Calculate the center coordinates of the bounding box`,
+      `const centerX = box.x + (box.width / 2);`,
+      `const centerY = box.y + (box.height / 2);`,
+      `// Click at the center`,
+      `await page.mouse.click(centerX, centerY);`
+    ];
+
+    const action = async () => {
+      const box = await locator.boundingBox();
+      if (box === null) {
+        throw new Error('The element was not found or not visible');
+      }
+      const centerX = box.x + (box.width / 2);
+      const centerY = box.y + (box.height / 2);
+      await tab.page.mouse.click(centerX, centerY);
+    };
+
+    return {
+      code,
+      action,
+      captureSnapshot: true,
+      waitForNetwork: true,
+    }
+  }
+};
 
 export default [
   snapshot,
