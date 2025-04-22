@@ -311,8 +311,14 @@ export const clickAtRefCenter: Tool = {
       if (box === null) {
         throw new Error('The element was not found or not visible');
       }
-      const centerX = box.x + (box.width / 2);
-      const centerY = box.y + (box.height / 2);
+
+      const { x, y, width, height } = box;
+      if (width === 0 || height === 0) {
+        throw new Error('The element has no meaningful clickable area');
+      }
+
+      const centerX = x + (width / 2);
+      const centerY = y + (height / 2);
       await tab.page.mouse.click(centerX, centerY);
     };
 
