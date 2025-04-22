@@ -414,9 +414,30 @@ class PageSnapshot {
         node.items = await Promise.all(node.items.map(visit));
       } else if (yaml.isScalar(node)) {
         if (typeof node.value === 'string') {
-          const value = node.value;
-          if (frameIndex > 0)
+          const value = node.value; // Example: "button "Enable accessibility" [ref=s1e3]"
+
+          // If we're in a frame, update the ref with the frame prefix
+          if (frameIndex > 0) {
             node.value = value.replace('[ref=', `[ref=f${frameIndex}`);
+            // Example: "button "Enable accessibility" [ref=f1s1e3]"
+          }
+
+          // Extract the ref ID from the original value
+          const refMatch = value.match(/\[ref=(.*?)\]/);
+          if (refMatch !== null) {
+            const ref = refMatch[1]; // Example: "s1e3"
+            const locator = this.refLocator(ref);
+            const box = await locator.boundingBox();
+            if (box !== null) {
+              const { x, y, width, height } = box;
+              if (width !== 0 && height !== 0) {
+                const centerX = x + (width / 2);
+                const centerY = y + (height / 2);
+                node.value = `${node.value} [${centerX}, ${centerY}]`;
+              }
+            }
+          }
+
           if (value.startsWith('iframe ')) {
             const ref = value.match(/\[ref=(.*)\]/)?.[1];
             if (ref) {

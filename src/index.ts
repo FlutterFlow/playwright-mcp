@@ -60,7 +60,6 @@ const screenshotTools: Tool[] = [
   ...screen,
   ...tabs(false),
   accessibilitySnapshot,
-  clickAtRefCenter,
 ];
 
 type Options = {
